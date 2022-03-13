@@ -38,7 +38,7 @@ Accept on body:
     "type":""
 }
 ```
-Format must be `audio` or `video`
+Format must be `audio` or `video`           
 Returns:
 ```json
 {
