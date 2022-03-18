@@ -13,12 +13,17 @@ Each hub creates a zip with all the files of download requests
 
 Environment variables that must be provided:
 
-- YTD_PATH - youtube-dl or yt-dlp path
-- FFMPEG_PATH - ffmpeg path
 - BYD_OUTPUT_PATH - output path where all the zips are saved
 - BYD_BUS_CS - RabbitMQ connection string
 - BYD_DB_CS - PostgreSQL connection string
 - BYD_API_URL - URL to use for the REST API
+
+Optional environment variables:
+
+- YTD_PATH - youtube-dl or yt-dlp path
+- FFMPEG_PATH - ffmpeg path
+
+If they are not set, it will try to load executables from $PATH
 
 ## REST API
 
