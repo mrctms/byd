@@ -17,11 +17,7 @@ func NewWorkersManager(bus messaging.MessageBus, repo repo.Repo) *WorkersManager
 	wm.bus = bus
 	wm.workersMap = map[string]func() (Worker, error){}
 	wm.workersMap[DOWNLOAD_WORKER] = func() (Worker, error) {
-		ytdPath, err := tool.GetYtdPath()
-		if err != nil {
-			return nil, err
-		}
-		d := downloader.NewYouTubeDownloader(ytdPath)
+		d := downloader.NewYouTubeDownloader(tool.GetYtdPath())
 		return NewDownloadWorker(wm.bus, repo, d), nil
 	}
 	return wm

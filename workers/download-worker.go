@@ -60,10 +60,7 @@ func (d *DownloadWorker) execute(msg string) error {
 		c := make(chan downloader.DownloaderOutput)
 		args := downloader.GetDownloadArgs(v.Type, v.URL, v.Format, filepath.Join(mainOutputPath, v.Dir))
 		go func() {
-			err := d.downloader.Download(c, args...)
-			if err != nil {
-				anyError = true
-			}
+			d.downloader.Download(c, args...)
 		}()
 		for o := range c {
 			o.Error = strings.Replace(o.Error, "\x00", "", -1) // do better

@@ -1,8 +1,6 @@
 package downloader
 
-import (
-	"regexp"
-)
+import "regexp"
 
 const downloadRegex = `\[download\]\s+(?:(?P<percent>[\d\.]+)%(?:\s+of\s+\~?(?P<total>[\d\.\w]+))?\s+at\s+(?:(?P<speed>[\d\.\w]+\/s)|[\w\s]+)\s+ETA\s(?P<eta>[\d\:]+))?`
 
@@ -24,7 +22,7 @@ func NewYouTubeDownloader(ydPath string) *YouTubeDownloader {
 	return yd
 }
 
-func (y *YouTubeDownloader) Download(progress chan<- DownloaderOutput, args ...string) error {
+func (y *YouTubeDownloader) Download(progress chan<- DownloaderOutput, args ...string) {
 	defer close(progress)
 	err := runDownloadProcess(y.ydPath, func(output string) {
 		reg := regexp.MustCompile(downloadRegex)
@@ -46,7 +44,6 @@ func (y *YouTubeDownloader) Download(progress chan<- DownloaderOutput, args ...s
 		progress <- DownloaderOutput{Error: output}
 	}, args...)
 	if err != nil {
-		return err
+		progress <- DownloaderOutput{Error: err.Error()}
 	}
-	return nil
 }

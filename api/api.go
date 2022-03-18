@@ -80,14 +80,18 @@ func (a *ApiServer) getHubDownloads(w http.ResponseWriter, r *http.Request) {
 	var downloads []repo.Download
 	hubIdConv, _ := strconv.Atoi(hubId)
 	a.repo.GetDownloadsFromHub(&downloads, uint(hubIdConv))
-	resp := hubDownloadsResponse{HubId: uint(hubIdConv)}
-	for _, v := range downloads {
-		resp.Downloads = append(resp.Downloads, hubDownload{DownloadId: v.DownloadId,
-			ETA: v.ETA, Details: v.Details, Dir: v.Dir,
-			Format: v.Format, Progress: v.Progress, Type: v.Type,
-			Speed: v.Speed, Total: v.Total, URL: v.URL})
+	if len(downloads) != 0 {
+		resp := hubDownloadsResponse{HubId: uint(hubIdConv)}
+		for _, v := range downloads {
+			resp.Downloads = append(resp.Downloads, hubDownload{DownloadId: v.DownloadId,
+				ETA: v.ETA, Details: v.Details, Dir: v.Dir,
+				Format: v.Format, Progress: v.Progress, Type: v.Type,
+				Speed: v.Speed, Total: v.Total, URL: v.URL})
+		}
+		response(w, resp, http.StatusOK)
+		return
 	}
-	response(w, resp, http.StatusOK)
+	response(w, nil, http.StatusNotFound)
 }
 
 func (a *ApiServer) getHubs(w http.ResponseWriter, r *http.Request) {
@@ -99,8 +103,12 @@ func (a *ApiServer) getHubs(w http.ResponseWriter, r *http.Request) {
 	}
 	var hub repo.Hub
 	err := a.repo.Get(&hub, map[string]interface{}{"hub_id": hubId})
-	if err != nil {
+	if (hub == repo.Hub{}) {
 		response(w, genericResponse{Message: fmt.Sprintf("hub with id %s not found", hubId), Details: err.Error()}, http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		response(w, genericResponse{Details: err.Error()}, http.StatusInternalServerError)
 		return
 	}
 	response(w, hubReponse{HubId: hub.HubId, Result: hub.Result, ZipName: hub.ZipName, Details: hub.Details}, http.StatusOK)
