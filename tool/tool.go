@@ -23,12 +23,23 @@ const (
 	bydApiEnv        = "BYD_API_URL"
 )
 
-func GetFFmpegPath() (string, error) {
-	return getValue(ffmpegPath, ffmpegPathEnv)
+func GetFFmpegPath() string {
+	if ffmpegPath != "" {
+		return ffmpegPath
+	}
+	ffmpegPath = os.Getenv(ffmpegPathEnv)
+	return ffmpegPath
 }
 
-func GetYtdPath() (string, error) {
-	return getValue(ytDlPath, ytdPathEnv)
+func GetYtdPath() string {
+	if ytDlPath != "" {
+		return ytDlPath
+	}
+	ytDlPath, _ = getValue(ytDlPath, ytdPathEnv)
+	if ytDlPath == "" {
+		ytDlPath = "yt-dlp"
+	}
+	return ytDlPath
 }
 
 func GetOutputPath() (string, error) {

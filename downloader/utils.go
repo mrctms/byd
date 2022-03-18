@@ -35,8 +35,8 @@ func downloadVideo(url string, format string, outputPath string) []string {
 
 func getDefaultArgs(outputPath string) []string {
 	var args []string
-	ffmpegPath, err := tool.GetFFmpegPath()
-	if err == nil {
+	ffmpegPath := tool.GetFFmpegPath()
+	if ffmpegPath != "" {
 		args = append(args, "--ffmpeg-location", ffmpegPath)
 	}
 	args = append(args,

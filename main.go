@@ -33,5 +33,5 @@ func main() {
 		log.Fatalln(err)
 	}
 	api := api.NewApiServer(apiUrl, bus, rep)
-	api.StartApi()
+	log.Fatalln(api.StartApi())
 }
